@@ -11,10 +11,10 @@ export default function Navbar() {
           ⚽ Football League
         </Link>
         <div className="space-x-2">
-          <Link href="/signin">
+          <Link href="/sign-in">
             <Button variant="outline">Sign In</Button>
           </Link>
-          <Link href="/signup">
+          <Link href="/sign-up">
             <Button>Sign Up</Button>
           </Link>
         </div>
