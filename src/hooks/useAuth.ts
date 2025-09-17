@@ -32,7 +32,7 @@ export function useAuth() {
       // Lưu JWT vào localStorage
       localStorage.setItem("token", accessToken)
       localStorage.setItem("userName", userName)
-      localStorage.setItem("role", "ROLE_" + role)
+      localStorage.setItem("role", role)
 
       router.push("/")
     } catch (err: any) {

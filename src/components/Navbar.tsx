@@ -42,11 +42,11 @@ export default function Navbar() {
                 <PopoverContent className="w-auto p-0">
                   <div className="grid">
                     <div className="grid">
-                      <Link href="12" className="px-4 py-2 hover:bg-gray-200">Trang cá nhân</Link>
+                      <Link href="/profile" className="px-3.5 py-1.5 hover:bg-gray-200">Trang cá nhân</Link>
                     </div>
                     <hr />
                     <div className="grid">
-                      <Link href="12" className="px-4 py-2 hover:bg-gray-200">Đăng xuất</Link>
+                      <Link href="12" className="px-3.5 py-1.5 hover:bg-gray-200">Đăng xuất</Link>
                     </div>
                   </div>
                 </PopoverContent>
