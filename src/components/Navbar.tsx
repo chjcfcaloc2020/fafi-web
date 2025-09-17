@@ -11,6 +11,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
 
 export default function Navbar() {
   const { logout } = useAuth()
@@ -27,8 +37,37 @@ export default function Navbar() {
     <nav className="bg-white shadow-md py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
         <Link href="/" className="text-xl font-bold text-blue-600">
-          ⚽ Football League
+          ⚽ FAFI
         </Link>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="cursor-pointer">Giải đấu</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[200px] gap-4">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link href="/league/create">Tạo giải đấu</Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link href="#">Danh sách giải đấu</Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href="/team">Đội bóng</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href="/docs">Tin tức</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         <div className="space-x-2">
           {user ? (
             <>

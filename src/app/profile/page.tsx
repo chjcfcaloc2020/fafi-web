@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react"
 import { Team } from "@/types/team"
 import MyTeams from "@/app/teams/page"
+import MyLeagues from "@/app/league/MyLeagues"
 import TeamForm from "@/app/teams/TeamForm"
 import api from "@/lib/api"
 
@@ -37,15 +38,15 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container mx-auto w-1/2">
+    <div className="container mx-auto w-3/4">
       <Card>
         <CardContent>
-          <Tabs defaultValue="teams" className="w-full">
+          <Tabs defaultValue={role === "MANAGER" ? "teams" : "leagues"} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               {role === "MANAGER" ? (
                 <TabsTrigger value="teams">⚽ Đội Bóng</TabsTrigger>
               ) : (
-                <TabsTrigger value="leagues">Giải đấu</TabsTrigger>
+                <TabsTrigger value="leagues">🏆 Giải đấu</TabsTrigger>
               )}
               <TabsTrigger value="info">👤 Thông Tin</TabsTrigger>
               <TabsTrigger value="account">🔒 Tài Khoản</TabsTrigger>
@@ -61,8 +62,8 @@ export default function ProfilePage() {
               </TabsContent>
             ) : (
               <TabsContent value="leagues">
-                <p className="mt-4">Danh sách giải đấu bạn tổ chức (ORGANIZER)</p>
-                {/* TODO: nhúng LeaguesPage ở đây */}
+                <p className="text-xl font-semibold mt-4 mb-2">Danh sách giải đấu</p>
+                <MyLeagues />
               </TabsContent>
             )}
 
