@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react"
 import { Team } from "@/types/team"
 import MyTeams from "@/app/teams/page"
-import MyLeagues from "@/app/league/MyLeagues"
+import MyLeagues from "@/app/profile/my-league/MyLeagues"
 import TeamForm from "@/app/teams/TeamForm"
 import api from "@/lib/api"
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,17 +8,46 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar28 } from "@/components/Calendar28";
-import { createLeague } from "@/lib/services/leagueServices";
+import { getLeagueById, updateLeague } from "@/lib/services/leagueServices";
 import { League } from "@/types/league";
 import { toDateTimeString } from "@/lib/utils";
+import { useParams } from "next/navigation";
 
-export default function CreateLeaguePage() {
+export default function EditLeaguePage() {
+  const { id } = useParams();
+  const [league, setLeague] = useState<League | null>(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [teamNumber, setTeamNumber] = useState(2);
+  const [teamSize, setTeamSize] = useState(5);
+  const [format, setFormat] = useState("MIXED");
+  const [status, setStatus] = useState("UPCOMING");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
+  useEffect(() => {
+    const fetchLeague = async () => {
+      if (!token) return;
+      try {
+        const leagueData = await getLeagueById(String(id), token);
+        setLeague(leagueData);
+        setName(leagueData.name);
+        setDescription(leagueData.description);
+        setTeamNumber(leagueData.team_number);
+        setTeamSize(leagueData.team_size);
+        setFormat(leagueData.format);
+        setStartDate(leagueData.start_date.split("T")[0]);
+        setEndDate(leagueData.end_date.split("T")[0]);
+      } catch (err) {
+        console.error("Error fetching league:", err);
+      }
+    }
+    if (token) fetchLeague();
+  }, [id, token]);
+  console.log(league);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!token) return alert("Bạn cần đăng nhập");
@@ -32,10 +61,11 @@ export default function CreateLeaguePage() {
       format: formData.get("format") as string,
       start_date: toDateTimeString(startDate),
       end_date: toDateTimeString(endDate),
+      status: formData.get("status") as string,
     };
 
     try {
-      await createLeague(league, token);
+      await updateLeague(String(id), league, token);
       alert("Tạo giải đấu thành công!");
     } catch (err) {
       console.error(err);
@@ -45,10 +75,10 @@ export default function CreateLeaguePage() {
 
   return (
     <div className="flex justify-center items-center bg-gray-50">
-      <Card className="w-full max-w-2xl shadow-md">
+      <Card className="w-full max-w-2xl shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            🏆 Tạo Giải Đấu Mới
+            🏆 Cập nhật Giải Đấu
           </CardTitle>
         </CardHeader>
 
@@ -56,23 +86,23 @@ export default function CreateLeaguePage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Tên giải đấu</Label>
-              <Input id="name" name="name" placeholder="Nhập tên giải đấu..." required />
+              <Input id="name" value={name} name="name" placeholder="Nhập tên giải đấu..." onChange={(e) => setName(e.target.value)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Mô tả</Label>
-              <Textarea id="description" name="description" placeholder="Mô tả ngắn về giải đấu..." />
+              <Textarea id="description" value={description} name="description" placeholder="Mô tả ngắn về giải đấu..." onChange={(e) => setDescription(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="teamNumber">Số lượng đội tham gia</Label>
-              <Input id="teamNumber" name="teamNumber" type="number" min="2" placeholder="Nhập số lượng đội tham gia..." required />
+              <Input id="teamNumber" value={teamNumber} name="teamNumber" type="number" min="2" placeholder="Nhập số lượng đội tham gia..." onChange={(e) => setTeamNumber(Number(e.target.value))} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="teamSize">Số cầu thủ mỗi đội (ra sân)</Label>
-              <Input id="teamSize" name="teamSize" type="number" min="5" placeholder="Nhập số cầu thủ mỗi đội ra sân..." required />
+              <Input id="teamSize" value={teamSize} name="teamSize" type="number" min="5" placeholder="Nhập số cầu thủ mỗi đội ra sân..." onChange={(e) => setTeamSize(Number(e.target.value))} required />
             </div>
             <div className="space-y-2">
               <Label>Thể thức</Label>
-              <Select name="format">
+              <Select name="format" value={format} onValueChange={setFormat}>
                 <SelectTrigger>
                   <SelectValue placeholder="Chọn thể thức" />
                 </SelectTrigger>
@@ -90,6 +120,19 @@ export default function CreateLeaguePage() {
               <Label>Ngày kết thúc</Label>
               <Calendar28 value={endDate} onChange={setEndDate} />
             </div>
+            <div className="space-y-2">
+              <Label>Trạng thái</Label>
+              <Select name="status" value={status} onValueChange={setStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="UPCOMING">Sắp diễn ra</SelectItem>
+                  <SelectItem value="ONGOING">Đang diễn ra</SelectItem>
+                  <SelectItem value="FINISHED">Đã kết thúc</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
 
           <CardFooter className="flex justify-end space-x-2 mt-4">
@@ -97,7 +140,7 @@ export default function CreateLeaguePage() {
               Trở về
             </Button>
             <Button type="submit" disabled={loading} className="cursor-pointer">
-              {loading ? "Đang tạo..." : "Tạo giải đấu"}
+              {loading ? "Đang cập nhật..." : "Cập nhật giải đấu"}
             </Button>
           </CardFooter>
         </form>
